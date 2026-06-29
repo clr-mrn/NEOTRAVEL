@@ -118,10 +118,9 @@ https://neotravel-delta.vercel.app/
 https://airtable.com/appxDxTahkMM34ibQ/shrs03emMttaf6s89
 
 # Accèder au tableau de bord :
-# Devis :
+
 https://airtable.com/appxDxTahkMM34ibQ/pagTbmwiK160yK3Ba
-# Relance :
-https://airtable.com/appxDxTahkMM34ibQ/shrs03emMttaf6s89
+
 
 ````
 
