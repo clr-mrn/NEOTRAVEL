@@ -1,0 +1,2420 @@
+{
+  "name": "NEOTRAVEL",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a77f938b-f394-4533-89ae-d21f5188de76",
+              "name": "depart",
+              "value": "={{ $json.data_devis.depart }}",
+              "type": "string"
+            },
+            {
+              "id": "0bad3291-5e4d-4d39-8dcd-97ca7455cf9e",
+              "name": "destination",
+              "value": "={{ $json.data_devis.destination }}",
+              "type": "string"
+            },
+            {
+              "id": "d6064c84-31c3-4796-aff3-2593d0aca47f",
+              "name": "nb_passagers",
+              "value": "={{ $json.data_devis.nb_passagers }}",
+              "type": "string"
+            },
+            {
+              "id": "cac44046-4cc1-4fca-9399-5cf86504a73b",
+              "name": "aller_retour",
+              "value": "true",
+              "type": "string"
+            },
+            {
+              "id": "4abcaea0-b9cb-4d15-a2cf-6b212c619f10",
+              "name": "date_demande",
+              "value": "={{ $today }}",
+              "type": "string"
+            },
+            {
+              "id": "2a33e8b8-099a-4684-b44a-4d4646591280",
+              "name": "date_depart",
+              "value": "={{ $json.data_devis.date_depart }}",
+              "type": "string"
+            },
+            {
+              "id": "944e3283-0f3f-428f-b4a0-f022d2ffe390",
+              "name": "date_retour",
+              "value": "={{ $json.data_devis.date_retour }}",
+              "type": "string"
+            },
+            {
+              "id": "e223f31f-875f-4545-9b30-40f9c3e380b0",
+              "name": "options",
+              "value": "={{ $json.data_devis.options }}",
+              "type": "string"
+            },
+            {
+              "id": "d853050a-19a4-48ba-a931-1bafe57b4f4d",
+              "name": "email",
+              "value": "={{ $json.data_devis.client_email }}",
+              "type": "string"
+            },
+            {
+              "id": "1bf56c53-add5-4bf9-8e58-1b4e18841057",
+              "name": "telephone",
+              "value": "={{ $json.data_devis.client_telephone }}",
+              "type": "string"
+            },
+            {
+              "id": "97281fe6-f056-4792-ab48-802a7d78fb68",
+              "name": "client_nom",
+              "value": "={{ $json.data_devis.client_nom }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        -160
+      ],
+      "id": "0c1dfe4e-2e63-46d5-97b6-1bc7b2aa0483",
+      "name": "parametres"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjE1ZjNhNDc1ZDExZjQwNWQ5MDQ5ZmExM2ZjZmM3MDdlIiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json[\"depart\"] }}"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        -160
+      ],
+      "id": "721a9b56-f04a-4e7a-a413-3854e0d778c9",
+      "name": "depart"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjE1ZjNhNDc1ZDExZjQwNWQ5MDQ5ZmExM2ZjZmM3MDdlIiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $('parametres').item.json[\"destination\"] }}"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        752,
+        -160
+      ],
+      "id": "e7a466b9-eafe-4dc6-b54f-730ce5c550ed",
+      "name": "destination"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/v2/directions/driving-car",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjE1ZjNhNDc1ZDExZjQwNWQ5MDQ5ZmExM2ZjZmM3MDdlIiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "start",
+              "value": "={{ $('depart').item.json.features[0].geometry.coordinates[0] }},{{ $('depart').item.json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "name": "end",
+              "value": "={{ $('destination').item.json.features[0].geometry.coordinates[0] }},{{ $('destination').item.json.features[0].geometry.coordinates[1] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1008,
+        -160
+      ],
+      "id": "daf5a1b7-4cbb-45fa-9779-263ec565314a",
+      "name": "distance"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  item.json.data = JSON.parse(item.json.data);\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        -160
+      ],
+      "id": "5ec7410f-1296-4519-a3b8-3ce57f2ec047",
+      "name": "Parse JSON"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "545c80d1-c1e5-407f-81b4-5bc6db3a5816",
+              "name": "distance_km",
+              "value": "={{Math.round($json.data.features[0].properties.summary.distance / 1000)}}",
+              "type": "number"
+            },
+            {
+              "id": "b6c3cec6-79ab-414f-8525-8a4ea9bc9b8b",
+              "name": "nb_passagers",
+              "value": "={{ $('parametres').item.json.nb_passagers }}",
+              "type": "string"
+            },
+            {
+              "id": "e74a02fd-3d3a-46b5-8d2c-7dfc90bdf70d",
+              "name": "aller_retour",
+              "value": "={{ $('parametres').item.json.aller_retour }}",
+              "type": "string"
+            },
+            {
+              "id": "2d79e6a1-40a9-469c-a1b0-46954195da2d",
+              "name": "date_demande",
+              "value": "={{ $('parametres').item.json.date_demande }}",
+              "type": "string"
+            },
+            {
+              "id": "d49dfa1c-d5ef-403a-8a98-f54647010191",
+              "name": "date_depart",
+              "value": "={{ $('parametres').item.json.date_depart }}",
+              "type": "string"
+            },
+            {
+              "id": "ca3a2b52-d124-4a8a-8a58-1593a884a7fc",
+              "name": "date_retour",
+              "value": "={{ $('parametres').item.json.date_retour }}",
+              "type": "string"
+            },
+            {
+              "id": "c36d5b49-e2db-4d74-b8a4-605ffb7d0f49",
+              "name": "options",
+              "value": "={{ $('parametres').item.json.options }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        48
+      ],
+      "id": "f5e25225-a183-4382-9f6d-935d7dc1a3a8",
+      "name": "json_final"
+    },
+    {
+      "parameters": {
+        "jsCode": "const TARIFS_DISTANCE = [\n  {km:10,prix:250},{km:20,prix:250},{km:30,prix:250},{km:40,prix:320},\n  {km:50,prix:350},{km:60,prix:390},{km:70,prix:430},{km:80,prix:500},\n  {km:90,prix:540},{km:100,prix:580},{km:110,prix:620},{km:120,prix:660},\n  {km:130,prix:700},{km:140,prix:740},{km:150,prix:780},{km:160,prix:820},\n  {km:170,prix:860},{km:180,prix:900},\n];\nconst COEF_SAISON = {\n  basse:      {taux:-0.07, mois:[11,1,2,8]},\n  moyenne:    {taux: 0.00, mois:[12,10,9]},\n  haute:      {taux: 0.10, mois:[3,4,7]},\n  tres_haute: {taux: 0.15, mois:[5,6]},\n};\nconst COEF_ANTICIPATION = [\n  {code:'DD_PRIORITAIRE', taux: 0.10, min:0,  max:14},\n  {code:'DD_URGENT',      taux: 0.05, min:15, max:30},\n  {code:'DD_NORMAL',      taux:-0.05, min:31, max:90},\n  {code:'DD_3MOISETPLUS', taux:-0.10, min:91, max:Infinity},\n];\nconst COEF_CAPACITE = [\n  {code:'cap_0_19',  taux:-0.05, min:0,  max:19},\n  {code:'cap_20_53', taux: 0.00, min:20, max:53},\n  {code:'cap_54_63', taux: 0.15, min:54, max:63},\n  {code:'cap_64_67', taux: 0.20, min:64, max:67},\n  {code:'cap_68_85', taux: 0.40, min:68, max:85},\n];\nconst OPTIONS = { guide:80, nuit_chauffeur:120, peages:0 };\nconst TVA = 0.10, MARGE = 0.15, SEUIL_ESCALADE_PAX = 85, TARIF_KM_AU_DELA_180 = 2.5;\n\nconst r2 = x => Math.round(x*100)/100;\n\nfunction baseTransfertSimple(km){\n  if (km <= 180){\n    const p = TARIFS_DISTANCE.find(t => km <= t.km);\n    return p ? p.prix : TARIFS_DISTANCE[TARIFS_DISTANCE.length-1].prix;\n  }\n  return (km * 2) * TARIF_KM_AU_DELA_180;\n}\nfunction coefSaison(date){\n  const m = date.getMonth()+1;\n  for (const [code,info] of Object.entries(COEF_SAISON))\n    if (info.mois.includes(m)) return {type:'saison', code, taux:info.taux};\n  return {type:'saison', code:'moyenne', taux:0};\n}\nfunction coefAnticipation(j){\n  const row = COEF_ANTICIPATION.find(r => j>=r.min && j<=r.max);\n  return {type:'anticipation', code: row?row.code:'?', taux: row?row.taux:0};\n}\nfunction coefCapacite(n){\n  const row = COEF_CAPACITE.find(r => n>=r.min && n<=r.max);\n  return {type:'capacite', code: row?row.code:'?', taux: row?row.taux:0};\n}\nfunction normalize(d){\n  const depart = d.date_depart ? new Date(d.date_depart) : null;\n  const retour = d.date_retour ? new Date(d.date_retour) : null;\n  let nbJours = d.nb_jours, nbNuits = d.nb_nuits;\n  if (nbJours == null)\n    nbJours = (depart && retour && !isNaN(depart) && !isNaN(retour))\n      ? Math.max(1, Math.round((retour-depart)/86400000)+1) : 1;\n  if (nbNuits == null) nbNuits = Math.max(0, nbJours-1);\n  return {...d, _depart:depart, nbJours, nbNuits};\n}\n\nfunction calculerDevis(input){\n  const d = normalize(input);\n  const lignes = [], coefficients = [];\n\n  // --- garde-fous ---\n  if (!d.nb_passagers || d.nb_passagers <= 0)\n    return {statut:'erreur', escalade:false, motif:'Nombre de passagers invalide'};\n  if (d.nb_passagers > SEUIL_ESCALADE_PAX)\n    return {statut:'escalade', escalade:true, motif:`> ${SEUIL_ESCALADE_PAX} passagers : flux manuel (validation humaine)`};\n  if (!d.distance_km || d.distance_km <= 0)\n    return {statut:'erreur', escalade:false, motif:'Distance invalide'};\n  if (!d._depart || isNaN(d._depart))\n    return {statut:'erreur', escalade:false, motif:'Date de départ invalide'};\n  const dDemande = d.date_demande ? new Date(d.date_demande) : new Date();\n  const joursAvant = Math.ceil((d._depart - dDemande)/86400000);\n  if (joursAvant < 0)\n    return {statut:'erreur', escalade:false, motif:'Date de départ antérieure à la demande'};\n\n  // --- 1) base distance ---\n  let base = baseTransfertSimple(d.distance_km);\n  lignes.push({libelle:`Base distance (${d.distance_km} km, transfert simple)`, montant:r2(base)});\n  if (d.aller_retour){ lignes.push({libelle:'Aller/retour (x2)', montant:r2(base)}); base *= 2; }\n\n  // --- 2) coefficients sur la base transport ---\n  const cS = coefSaison(d._depart), cA = coefAnticipation(joursAvant), cC = coefCapacite(d.nb_passagers);\n  coefficients.push(cS, cA, cC);\n  for (const c of [cS, cA, cC])\n    lignes.push({libelle:`Coefficient ${c.type} (${c.code}, ${(c.taux*100).toFixed(0)}%)`, montant:r2(base*c.taux)});\n  const sommeCoef = cS.taux + cA.taux + cC.taux;\n  const montantTransport = base * (1 + sommeCoef);\n\n  // --- 3) options ---\n  let totalOptions = 0;\n  const opts = d.options || [];\n  if (opts.includes('guide')){ const m=OPTIONS.guide*d.nbJours; totalOptions+=m; lignes.push({libelle:`Option guide (${d.nbJours} j x ${OPTIONS.guide}€)`, montant:r2(m)}); }\n  if (opts.includes('nuit_chauffeur')){ const m=OPTIONS.nuit_chauffeur*d.nbNuits; totalOptions+=m; lignes.push({libelle:`Option nuit chauffeur (${d.nbNuits} nuit(s) x ${OPTIONS.nuit_chauffeur}€)`, montant:r2(m)}); }\n  if (opts.includes('peages')) lignes.push({libelle:'Option péages (forfait à préciser)', montant:0});\n\n  // --- 4) marge puis 5) TVA ---\n  const sousTotal = montantTransport + totalOptions;\n  const marge = sousTotal * MARGE;\n  lignes.push({libelle:`Marge commerciale (+${(MARGE*100).toFixed(0)}%)`, montant:r2(marge)});\n  const prixHT = sousTotal + marge;\n  const tva = prixHT * TVA;\n  const prixTTC = prixHT + tva;\n\n  return {\n    statut:'ok', escalade:false, devise:'EUR',\n    prix_ht:r2(prixHT), tva:r2(tva), prix_ttc:r2(prixTTC),\n    lignes, coefficients,\n    meta:{ jours_avant_depart:joursAvant, nb_jours:d.nbJours, nb_nuits:d.nbNuits, somme_coefficients:sommeCoef },\n  };\n}\n\n/* ============================================================================\n *  LIRE DEPUIS AIRTABLE (optionnel — pilotage temps réel)\n *  Branche un nœud Airtable \"Search records\" (table Matrices) en amont,\n *  nomme-le \"Matrices\", puis décommente pour remplacer les constantes ci-dessus\n *  par les valeurs lues en base. À adapter selon tes noms de champs.\n * ----------------------------------------------------------------------------\n *  const rows = $('Matrices').all().map(i => i.json);\n *  // ex : retrouver un taux -> rows.find(r => r.Code === 'saison_haute').Valeur\n * ========================================================================== */\n\n// === SCENARIOS DE TEST (exécutés si aucun item n'est branché en amont) ======\nconst SCENARIOS_DE_TEST = [\n  {nb_passagers:53, distance_km:120, aller_retour:true,  date_demande:'2026-06-25', date_depart:'2026-07-14', date_retour:'2026-07-16', options:['nuit_chauffeur']},\n  {nb_passagers:40, distance_km:90,  aller_retour:false, date_demande:'2026-06-25', date_depart:'2026-07-04'},\n  {nb_passagers:30, distance_km:250, aller_retour:false, date_demande:'2026-01-10', date_depart:'2026-05-20'},\n  {nb_passagers:90, distance_km:100, date_depart:'2026-05-10'},                       // escalade\n  {nb_passagers:0,  distance_km:100, date_depart:'2026-05-10'},                       // erreur\n];\n\n// === SORTIE n8n =============================================================\nconst items = $input.all();\nconst entrees = items.length ? items.map(i => i.json) : SCENARIOS_DE_TEST;\nreturn entrees.map(e => ({ json: calculerDevis(e) }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        48
+      ],
+      "id": "fe583f3d-a91f-4f7f-8e6d-9dc97ba8e677",
+      "name": "calculer_devis"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBUUxwRfBA2itp6",
+          "mode": "list",
+          "cachedResultName": "Devis",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblBUUxwRfBA2itp6"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Prix_HT": "={{ $('calculer_devis').item.json.prix_ht }}",
+            "Prix_TTC": "={{ $('calculer_devis').item.json.prix_ttc }}",
+            "Statut": "=Brouillon",
+            "Nb_relances": 0,
+            "Detail_lignes": "={{ $('calculer_devis').item.json.lignes.map(l => l.libelle + ' : ' + l.montant + ' €').join('\\n') }}",
+            "Demande": "={{ [$('creer_demande').item.json.id] }}",
+            "TVA": "={{ $('calculer_devis').item.json.tva }}",
+            "PDF": "={{ $('Convert HTML to PDF').item.json.pdf_url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "﻿Reference",
+              "displayName": "﻿Reference",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Demande",
+              "displayName": "Demande",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "﻿Reference (from Demande)",
+              "displayName": "﻿Reference (from Demande)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Prix_HT",
+              "displayName": "Prix_HT",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "TVA",
+              "displayName": "TVA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Prix_TTC",
+              "displayName": "Prix_TTC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Detail_lignes",
+              "displayName": "Detail_lignes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Envoyé",
+                  "value": "Envoyé"
+                },
+                {
+                  "name": "Brouillon",
+                  "value": "Brouillon"
+                },
+                {
+                  "name": "Accepté",
+                  "value": "Accepté"
+                },
+                {
+                  "name": "Refusé",
+                  "value": "Refusé"
+                },
+                {
+                  "name": "Clôturé",
+                  "value": "Clôturé"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date_envoi",
+              "displayName": "Date_envoi",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Prochaine_relance",
+              "displayName": "Prochaine_relance",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Nb_relances",
+              "displayName": "Nb_relances",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "PDF",
+              "displayName": "PDF",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Relances",
+              "displayName": "Relances",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        272
+      ],
+      "id": "0430e3c6-1532-4462-a3c8-9abd2e02afff",
+      "name": "creer_devis",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblscu7oiq2duCJs7",
+          "mode": "list",
+          "cachedResultName": "Demandes",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblscu7oiq2duCJs7"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Depart": "={{ $('parametres').item.json.depart }}",
+            "Destination": "={{ $('parametres').item.json.destination }}",
+            "Nb_passagers": "={{ $('parametres').item.json.nb_passagers }}",
+            "Aller_retour": "={{ $('parametres').item.json.aller_retour }}",
+            "Statut": "Qualifié",
+            "Date_depart": "={{ $('parametres').item.json.date_depart }}",
+            "Options": "={{ $('parametres').item.json.options }}",
+            "Urgence": "={{ ({DD_PRIORITAIRE:'prioritaire', DD_URGENT:'urgent', DD_NORMAL:'normal', DD_3MOISETPLUS:'3mois+'})[$json.coefficients[1].code] }}",
+            "Date_retour": "={{ $('parametres').item.json.date_retour }}",
+            "Client": "={{ [$json.client_id] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "﻿Reference",
+              "displayName": "﻿Reference",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Client",
+              "displayName": "Client",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "﻿Nom (from Client)",
+              "displayName": "﻿Nom (from Client)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Depart",
+              "displayName": "Depart",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Destination",
+              "displayName": "Destination",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date_depart",
+              "displayName": "Date_depart",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date_retour",
+              "displayName": "Date_retour",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nb_passagers",
+              "displayName": "Nb_passagers",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Aller_retour",
+              "displayName": "Aller_retour",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Options",
+              "displayName": "Options",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "nuit_chauffeur",
+                  "value": "nuit_chauffeur"
+                },
+                {
+                  "name": "guide",
+                  "value": "guide"
+                },
+                {
+                  "name": "peages",
+                  "value": "peages"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Qualifié",
+                  "value": "Qualifié"
+                },
+                {
+                  "name": "Nouveau",
+                  "value": "Nouveau"
+                },
+                {
+                  "name": "A valider",
+                  "value": "A valider"
+                },
+                {
+                  "name": "Devis envoyé",
+                  "value": "Devis envoyé"
+                },
+                {
+                  "name": "Gagné",
+                  "value": "Gagné"
+                },
+                {
+                  "name": "Perdu",
+                  "value": "Perdu"
+                },
+                {
+                  "name": "Clôturé",
+                  "value": "Clôturé"
+                },
+                {
+                  "name": "Escaladé",
+                  "value": "Escaladé"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Urgence",
+              "displayName": "Urgence",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "urgent",
+                  "value": "urgent"
+                },
+                {
+                  "name": "prioritaire",
+                  "value": "prioritaire"
+                },
+                {
+                  "name": "normal",
+                  "value": "normal"
+                },
+                {
+                  "name": "3mois+",
+                  "value": "3mois+"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score_completude",
+              "displayName": "Score_completude",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Devis",
+              "displayName": "Devis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        272
+      ],
+      "id": "9ec0848f-0b83-4e1d-8d64-89bcb11f4b89",
+      "name": "creer_demande",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "html_content": "={{ $json.html }}"
+      },
+      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
+      "typeVersion": 1,
+      "position": [
+        496,
+        48
+      ],
+      "id": "251830ce-da3f-4674-8e9c-59c1b6f7b6f3",
+      "name": "Convert HTML to PDF",
+      "credentials": {
+        "htmlcsstopdfApi": {
+          "id": "0idh4pYXgTdAit0A",
+          "name": "HTML to PDF account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('calculer_devis').item.json;\nconst p = $('parametres').item.json;\n\nconst frDate = s => {\n  if (!s) return '—';\n\n  const date = new Date(s);\n\n  const jour = String(date.getDate()).padStart(2, '0');\n  const mois = String(date.getMonth() + 1).padStart(2, '0');\n  const annee = date.getFullYear();\n\n  return `${jour}-${mois}-${annee}`;\n};\n\nif (d.statut !== 'ok') {\n  return [{ json: { html: null, skip: true, statut: d.statut, motif: d.motif } }];\n}\n\n\nconst eur = n =>\n  Number(n).toLocaleString('fr-FR', {\n    minimumFractionDigits: 2,\n    maximumFractionDigits: 2\n  }) + ' €';\n\nlet options = p.options;\n\nif (typeof options === 'string') {\n  try {\n    options = JSON.parse(options);\n  } catch {\n    options = options.split(',').map(s => s.trim());\n  }\n}\n\nconst optionsTxt =\n  Array.isArray(options) && options.length\n    ? options.join(', ')\n    : 'Aucune option';\n\nconst distanceKm = $('json_final').first().json.distance_km ?? '—';\n\nconst html = `<!doctype html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * {\n    box-sizing: border-box;\n    font-family: Arial, Helvetica, sans-serif;\n  }\n\n  body {\n    margin: 0;\n    background: #ffffff;\n    color: #172015;\n  }\n\n  .page {\n    width: 100%;\n    max-width: 760px;\n    margin: 0 auto;\n    background: #ffffff;\n    padding: 26px 34px;\n  }\n\n  .top {\n    background: linear-gradient(135deg, #07334a 0%, #0b4f5f 55%, #0b2a17 100%);\n    color: #ffffff;\n    border-radius: 18px;\n    padding: 22px 26px;\n    margin-bottom: 22px;\n  }\n\n  .brand {\n    font-size: 24px;\n    font-weight: 900;\n  }\n\n  .brand span {\n    color: #f6d63b;\n  }\n\n  .top-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: flex-start;\n    gap: 24px;\n  }\n\n  .devis-title {\n    text-align: right;\n  }\n\n  .devis-title b {\n    display: block;\n    font-size: 28px;\n    color: #f6d63b;\n  }\n\n  .devis-title span {\n    font-size: 12px;\n    color: #e5eee8;\n  }\n\n  .headline {\n    margin-top: 18px;\n    font-size: 28px;\n    line-height: 1.05;\n    font-weight: 900;\n  }\n\n  .headline span {\n    color: #f6d63b;\n  }\n\n  .sub {\n    margin-top: 8px;\n    font-size: 13px;\n    color: #d8e6dc;\n  }\n\n  .section {\n    margin-bottom: 16px;\n  }\n\n  .grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 14px;\n  }\n\n  .card {\n    border: 1px solid #dfe8d8;\n    border-radius: 14px;\n    padding: 14px 16px;\n    background: #f8faf5;\n  }\n\n  .card.dark {\n    background: #0f321d;\n    color: #ffffff;\n    border-color: #0f321d;\n  }\n\n  .card-title {\n    font-size: 13px;\n    font-weight: 900;\n    color: #0f321d;\n    margin-bottom: 10px;\n    text-transform: uppercase;\n  }\n\n  .card.dark .card-title {\n    color: #f6d63b;\n  }\n\n  table {\n    width: 100%;\n    border-collapse: collapse;\n  }\n\n  td {\n    padding: 4px 0;\n    font-size: 13px;\n    vertical-align: top;\n  }\n\n  .label {\n    color: #66736b;\n    width: 115px;\n    font-weight: 700;\n  }\n\n  .card.dark .label {\n    color: #f6d63b;\n  }\n\n  .value {\n    text-align: right;\n    font-weight: 600;\n  }\n\n  .trajet {\n    font-size: 18px;\n    font-weight: 900;\n    color: #ffffff;\n    margin-bottom: 8px;\n  }\n\n  .prestation {\n    margin-top: 8px;\n    border-radius: 14px;\n    overflow: hidden;\n    border: 1px solid #dfe8d8;\n  }\n\n  .prestation th {\n    background: #102817;\n    color: #f6d63b;\n    padding: 10px 12px;\n    text-align: left;\n    font-size: 12px;\n    text-transform: uppercase;\n  }\n\n  .prestation th.r {\n    text-align: right;\n  }\n\n  .prestation td {\n    padding: 12px;\n    border-bottom: 1px solid #e4eadc;\n    font-size: 13px;\n  }\n\n  .prestation .r {\n    text-align: right;\n    font-weight: 700;\n    white-space: nowrap;\n  }\n\n  .small {\n    display: block;\n    margin-top: 3px;\n    color: #66736b;\n    font-size: 11px;\n  }\n\n  .totals {\n    margin-top: 12px;\n    display: flex;\n    justify-content: flex-end;\n  }\n\n  .total-box {\n    width: 300px;\n    border-radius: 16px;\n    overflow: hidden;\n    border: 1px solid #dfe8d8;\n  }\n\n  .total-box table td {\n    padding: 8px 14px;\n    font-size: 13px;\n  }\n\n  .total-box .lbl {\n    color: #66736b;\n    font-weight: 700;\n  }\n\n  .total-box .num {\n    text-align: right;\n    font-weight: 700;\n  }\n\n  .total-ttc td {\n    background: #f6d63b;\n    color: #102817;\n    font-size: 18px !important;\n    font-weight: 900;\n  }\n\n  .notice {\n    margin-top: 18px;\n    padding: 12px 15px;\n    border-radius: 14px;\n    background: #fff8c9;\n    border: 1px solid #f6d63b;\n    color: #3b3511;\n    font-size: 12px;\n    line-height: 1.5;\n  }\n\n  .footer {\n    margin-top: 16px;\n    padding-top: 12px;\n    border-top: 1px solid #e4eadc;\n    color: #66736b;\n    font-size: 10.5px;\n    text-align: center;\n    line-height: 1.5;\n  }\n\n  .footer strong {\n    color: #102817;\n  }\n</style>\n</head>\n\n<body>\n  <div class=\"page\">\n\n    <div class=\"top\">\n      <div class=\"top-row\">\n        <div class=\"brand\">Neo<span>Travel</span></div>\n        <div class=\"devis-title\">\n          <b>DEVIS</b>\n          <span>Date d'émission : ${frDate(p.date_demande || new Date().toISOString().split('T')[0])}</span>\n        </div>\n      </div>\n\n      <div class=\"headline\">\n        Organisez votre<br>\n        voyage de groupe <span>simplement</span>\n      </div>\n\n      <div class=\"sub\">\n        Devis instantané et détaillé · Prix transparent · Assistant disponible 24h/24\n      </div>\n    </div>\n\n    <div class=\"grid section\">\n      <div class=\"card\">\n        <div class=\"card-title\">Client</div>\n        <table>\n          <tr>\n            <td class=\"label\">Nom</td>\n            <td class=\"value\">${p.client_nom || '—'}</td>\n          </tr>\n          <tr>\n            <td class=\"label\">Téléphone</td>\n            <td class=\"value\">${p.telephone || '—'}</td>\n          </tr>\n          <tr>\n            <td class=\"label\">E-mail</td>\n            <td class=\"value\">${p.email || '—'}</td>\n          </tr>\n        </table>\n      </div>\n\n      <div class=\"card dark\">\n        <div class=\"card-title\">Trajet</div>\n        <div class=\"trajet\">${p.depart} → ${p.destination}</div>\n        <table>\n          <tr>\n            <td class=\"label\">Départ</td>\n            <td class=\"value\">${frDate(p.date_depart)}</td>\n          </tr>\n          <tr>\n            <td class=\"label\">Retour</td>\n            <td class=\"value\">${frDate(p.date_retour)}</td>\n          </tr>\n          <tr>\n            <td class=\"label\">Passagers</td>\n            <td class=\"value\">${p.nb_passagers}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n\n    <div class=\"card section\">\n      <div class=\"card-title\">Informations de transport</div>\n      <table>\n        <tr>\n          <td class=\"label\">Ville de départ</td>\n          <td class=\"value\">${p.depart}</td>\n        </tr>\n        <tr>\n          <td class=\"label\">Destination</td>\n          <td class=\"value\">${p.destination}</td>\n        </tr>\n        <tr>\n          <td class=\"label\">Distance estimée</td>\n          <td class=\"value\">${distanceKm} km</td>\n        </tr>\n        <tr>\n          <td class=\"label\">Options</td>\n          <td class=\"value\">${optionsTxt}</td>\n        </tr>\n      </table>\n    </div>\n\n    <table class=\"prestation\">\n      <thead>\n        <tr>\n          <th>Prestation proposée</th>\n          <th class=\"r\">Montant HT</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>\n            Transport en autocar avec chauffeur\n            <span class=\"small\">Trajet ${p.depart} → ${p.destination}, ${p.nb_passagers} passagers</span>\n          </td>\n          <td class=\"r\">${eur(d.prix_ht)}</td>\n        </tr>\n      </tbody>\n    </table>\n\n    <div class=\"totals\">\n      <div class=\"total-box\">\n        <table>\n          <tr>\n            <td class=\"lbl\">Total HT</td>\n            <td class=\"num\">${eur(d.prix_ht)}</td>\n          </tr>\n          <tr>\n            <td class=\"lbl\">TVA 10 %</td>\n            <td class=\"num\">${eur(d.tva)}</td>\n          </tr>\n          <tr class=\"total-ttc\">\n            <td>Total TTC</td>\n            <td class=\"num\">${eur(d.prix_ttc)}</td>\n          </tr>\n        </table>\n      </div>\n    </div>\n\n    <div class=\"notice\">\n      Ce devis est établi sous réserve de disponibilité d'un autocariste partenaire.\n      Après validation, l'équipe NeoTravel vous recontactera pour confirmer les modalités\n      de réservation et organiser votre transport.\n    </div>\n\n    <div class=\"footer\">\n      <strong>NeoTravel</strong> — Organisez votre voyage de groupe simplement & rapidement<br>\n      contact@neotravel.fr · 01 23 45 67 89\n    </div>\n\n  </div>\n</body>\n</html>`;\n\nreturn [{ json: { html } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        48
+      ],
+      "id": "492afc46-e56b-4bab-b255-baa5ea8a3c55",
+      "name": "generer_html_devis"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }} ",
+        "options": {
+          "systemMessage": "Tu es l'assistant commercial de NeoTravel.\n\nTu dois TOUJOURS répondre avec un JSON valide, sans texte avant ni après.\n\nFormat obligatoire à chaque réponse :\n\n{\n\"reply\": \"message affiché au client\",\n\"data_devis\": null\n}\n\nou, quand la demande est complète :\n\n{\n\"reply\": \"message affiché au client avec récapitulatif final\",\n\"data_devis\": {\n\"status\": \"complet\",\n\"consentement_contact\": true,\n\"client_nom\": \"...\",\n\"client_email\": \"...\",\n\"client_telephone\": \"...\",\n\"depart\": \"...\",\n\"destination\": \"...\",\n\"date_depart\": \"AAAA-MM-JJ\",\n\"date_retour\": \"AAAA-MM-JJ\",\n\"nb_passagers\": 0,\n\"options\": []\n}\n}\n\nRÈGLE 1 — Consentement obligatoire\n\nAvant toute collecte d'information personnelle ou de trajet, demande obligatoirement :\n\n\"Avant de commencer, acceptez-vous d'être recontacté concernant votre demande afin de recevoir votre devis ? Répondez par oui ou non.\"\n\nSi l'utilisateur n'a pas encore répondu oui ou non au consentement, ne traite aucune autre information.\n\nSi l'utilisateur répond non :\n\n{\n\"reply\": \"Je comprends. Sans accord pour être recontacté, nous ne pourrons pas donner suite à votre demande ni vous transmettre de devis.\",\n\"data_devis\": {\n\"status\": \"refus_consentement\",\n\"consentement_contact\": false\n}\n}\n\nSi l'utilisateur répond oui, poursuis la collecte.\n\nRÈGLE 2 — Informations obligatoires après consentement\n\nAprès consentement accepté, collecte :\n\n1. Nom du client\n2. Adresse mail\n3. Numéro de téléphone\n4. Ville de départ\n5. Ville de destination\n6. Date de départ\n7. Date de retour\n8. Nombre de passagers\n9. Options : guide, nuit_chauffeur, péages\n\nToutes ces informations sont obligatoires.\n\nRÈGLE 3 — Ne pas redemander\n\nTiens compte de tout l'historique.\nNe redemande jamais une information déjà fournie.\nSi l'utilisateur donne plusieurs informations dans un même message, enregistre-les toutes.\n\nRÈGLE 4 — Une seule question\n\nTant qu'il manque une information, `reply` contient uniquement la prochaine question à poser.\n`data_devis` reste null.\n\nRÈGLE 5 — Coordonnées\n\nQuand nom + email + téléphone sont connus, fais un court récapitulatif dans `reply`, puis pose la prochaine question métier.\n\nRÈGLE 6 — Options\n\nQuand tu demandes les options, demande :\n\n\"Souhaitez-vous ajouter une option : guide, nuit chauffeur ou péages ? Vous pouvez aussi répondre aucune.\"\n\nSi l'utilisateur répond \"aucune\" : options = [].\nSi l'utilisateur répond \"oui tout\" ou \"tout\" : options = [\"guide\", \"nuit_chauffeur\", \"péages\"].\nSi l'utilisateur cite une ou plusieurs options, mets uniquement celles citées dans le tableau.\n\nRÈGLE 7 — Finalisation immédiate\n\nDès que toutes les informations obligatoires sont connues, réponds immédiatement avec le JSON complet.\n\nLe champ `reply` doit contenir le récapitulatif final complet, par exemple :\n\n\"Merci, j'ai toutes les informations nécessaires. Voici le récapitulatif de votre demande :\n\n* Nom : ...\n* Email : ...\n* Téléphone : ...\n* Ville de départ : ...\n* Ville de destination : ...\n* Date de départ : ...\n* Date de retour : ...\n* Nombre de passagers : ...\n* Options souhaitées : ...\n\nJe prépare maintenant votre demande de devis.\"\n\nLe champ `data_devis` doit contenir toutes les données structurées.\n\nN'attends jamais un message supplémentaire après la réponse aux options.\n\n### Extraction automatique des informations\n\nLorsque l'utilisateur fournit une information claire, considère-la comme valide immédiatement.\n\nNe demande jamais une confirmation si l'information est explicite.\n\nPar exemple :\n\nUtilisateur :\n\"Paris à Marseille du 24 juillet 2026 au 30 juillet 2026, nous sommes 45.\"\n\nTu dois enregistrer immédiatement :\n\n- départ = Paris\n- destination = Marseille\n- date_depart = 2026-07-24\n- date_retour = 2026-07-30\n- nb_passagers = 45\n\nPuis passer directement à la prochaine information manquante.\n\nTu ne dois jamais répondre :\n\n- \"Pouvez-vous confirmer ?\"\n- \"Est-ce bien le 24 juillet ?\"\n- \"Merci pour la précision.\"\n- \"Veuillez confirmer.\"\n\nLes informations données clairement par l'utilisateur sont considérées comme définitives.\nNe demande jamais deux fois la même information.\n\nAvant chaque réponse, vérifie mentalement la liste des informations déjà connues.\n\nSi une information est présente dans l'historique, elle est considérée comme acquise.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        160,
+        -560
+      ],
+      "id": "8edc8187-2c37-499d-bb48-8d48012f2413",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "57e30f2b-43b5-42fb-9649-b234472e0160",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        -560
+      ],
+      "id": "438c2ab6-aacd-41ed-bcca-9ebbba3690d4",
+      "name": "Webhook",
+      "webhookId": "57e30f2b-43b5-42fb-9649-b234472e0160"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.sessionId }} ",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        288,
+        -336
+      ],
+      "id": "9ef4ebb1-bee3-4bac-af6e-0cc98ff7f2bd",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ reply: $json.reply, data_devis: $json.data_devis }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        784,
+        -560
+      ],
+      "id": "941bdc91-b7b2-42eb-a221-2069eb19331f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $json.output || \"\";\n\noutput = output\n  .replace(/```json/g, \"\")\n  .replace(/```/g, \"\")\n  .trim();\n\ntry {\n  const parsed = JSON.parse(output);\n\n  return [{\n    json: {\n      reply: parsed.reply,\n      data_devis: parsed.data_devis\n    }\n  }];\n} catch (error) {\n  return [{\n    json: {\n      reply: output,\n      data_devis: null,\n      parse_error: error.message\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        -560
+      ],
+      "id": "71cbbcfa-b968-4900-8aa9-0b8e0e1bae8f",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "26e37f89-8403-4e96-a6f7-ff3be4e205e8",
+              "leftValue": "={{ $json.data_devis.status === \"complet\" && $json.data_devis.consentement_contact === true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -240,
+        -304
+      ],
+      "id": "2cee9036-8333-47cc-9f8c-89e240778057",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6d50e315-9873-436d-8b98-fa56acb13a33",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        272
+      ],
+      "id": "102c405d-7584-4f41-9d20-ae77434d2829",
+      "name": "client_existe"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblAAuR4xJpNt3r3A",
+          "mode": "list",
+          "cachedResultName": "Clients",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblAAuR4xJpNt3r3A"
+        },
+        "filterByFormula": "={Email} = \"{{ $('parametres').item.json.email }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        272
+      ],
+      "id": "29781322-04fe-4f85-8b5f-4faf8b68ab85",
+      "name": "recherche_client",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblAAuR4xJpNt3r3A",
+          "mode": "list",
+          "cachedResultName": "Clients",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblAAuR4xJpNt3r3A"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Consentement": true,
+            "﻿Nom": "={{ $('parametres').item.json.client_nom }}",
+            "Telephone": "={{ $('parametres').item.json.telephone }}",
+            "Email": "={{ $('parametres').item.json.email }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "﻿Nom",
+              "displayName": "﻿Nom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Telephone",
+              "displayName": "Telephone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Type_client",
+              "displayName": "Type_client",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "association",
+                  "value": "association"
+                },
+                {
+                  "name": "particulier",
+                  "value": "particulier"
+                },
+                {
+                  "name": "entreprise",
+                  "value": "entreprise"
+                },
+                {
+                  "name": "collectivité",
+                  "value": "collectivité"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Consentement",
+              "displayName": "Consentement",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Demandes",
+              "displayName": "Demandes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        384
+      ],
+      "id": "0b7da038-5c19-4a9f-9a00-42ccf9f91cc8",
+      "name": "creer_client",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1b64730-4bb7-42f9-8285-78151cdf744e",
+              "name": "client_id",
+              "value": "={{ $json.id ?? $('recherche_client').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        272
+      ],
+      "id": "6a8da1db-633f-431d-8985-984443bebdab",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatVercelAiGateway",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -336
+      ],
+      "id": "eb7c29b9-b442-4a0d-914b-52b73bf947ba",
+      "name": "Vercel AI Gateway Chat Model",
+      "credentials": {
+        "vercelAiGatewayApi": {
+          "id": "slJDNc3GJ2e4zjnO",
+          "name": "Vercel AI Gateway account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblMptGcNIBO344px",
+          "mode": "list",
+          "cachedResultName": "Relances",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblMptGcNIBO344px"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "﻿Devis": "={{ [$json.id] }}",
+            "Canal": "email",
+            "Date_prevue": "={{\n(() => {\n  const d = new Date($json.createdTime);\n  d.setDate(d.getDate() + 3);\n  return d.toISOString();\n})()\n}}",
+            "Statut": "planifiée"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Code",
+              "displayName": "Code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "﻿Devis",
+              "displayName": "﻿Devis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date_prevue",
+              "displayName": "Date_prevue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "planifiée",
+                  "value": "planifiée"
+                },
+                {
+                  "name": "envoyée",
+                  "value": "envoyée"
+                },
+                {
+                  "name": "annulée",
+                  "value": "annulée"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Canal",
+              "displayName": "Canal",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "email",
+                  "value": "email"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        272
+      ],
+      "id": "0d8e3418-b426-4417-9e41-81a0601e086c",
+      "name": "creer_premiere_relance",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblMptGcNIBO344px",
+          "mode": "list",
+          "cachedResultName": "Relances",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblMptGcNIBO344px"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "﻿Devis": "={{ $('creer_devis').item.json.id }}",
+            "Canal": "email",
+            "Date_prevue": "={{\n(() => {\n  const d = new Date($('creer_devis').item.json.createdTime);\n  d.setDate(d.getDate() + 7);\n  return d.toISOString();\n})()\n}}",
+            "Statut": "planifiée"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Code",
+              "displayName": "Code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "﻿Devis",
+              "displayName": "﻿Devis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date_prevue",
+              "displayName": "Date_prevue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "planifiée",
+                  "value": "planifiée"
+                },
+                {
+                  "name": "envoyée",
+                  "value": "envoyée"
+                },
+                {
+                  "name": "annulée",
+                  "value": "annulée"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Canal",
+              "displayName": "Canal",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "email",
+                  "value": "email"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        272
+      ],
+      "id": "6dfd6d1b-3ddb-4b0e-913e-9bef759441d4",
+      "name": "creer_deuxième_relance",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        1568,
+        -560
+      ],
+      "id": "3c73a8c4-c013-4128-acf0-4811046f4b1b",
+      "name": "A 5h du matin"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblMptGcNIBO344px",
+          "mode": "list",
+          "cachedResultName": "Relances",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblMptGcNIBO344px"
+        },
+        "filterByFormula": "=AND(\n  DATETIME_FORMAT({Date_prevue}, 'YYYY-MM-DD') = \"{{ $json.timestamp.slice(0,10) }}\",\n  {Statut} = \"planifiée\"\n)",
+        "returnAll": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1840,
+        -560
+      ],
+      "id": "d11d25b0-997f-4d96-9c46-a4b794bdb605",
+      "name": "relances",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBUUxwRfBA2itp6",
+          "mode": "list",
+          "cachedResultName": "Devis",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblBUUxwRfBA2itp6"
+        },
+        "id": "={{ $json.fields['﻿Devis'][0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2128,
+        -560
+      ],
+      "id": "ad2212e2-a6fc-453e-863d-7824a76d7054",
+      "name": "devis",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblscu7oiq2duCJs7",
+          "mode": "list",
+          "cachedResultName": "Demandes",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblscu7oiq2duCJs7"
+        },
+        "id": "={{ $json.fields.Demande[0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        -560
+      ],
+      "id": "8d8e2e6a-329a-4154-ace2-4e3d425da7b6",
+      "name": "demandes",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblAAuR4xJpNt3r3A",
+          "mode": "list",
+          "cachedResultName": "Clients",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblAAuR4xJpNt3r3A"
+        },
+        "id": "={{ $json.fields.Client[0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        -320
+      ],
+      "id": "7ef6c817-4797-4093-9106-70071035d3bf",
+      "name": "recup clients",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=marionclar8@gmail.com",
+        "subject": "Attente d'action de votre part concernant votre dernier devis",
+        "message": "=<!DOCTYPE html> <html lang=\"fr\"> <head> <meta charset=\"UTF-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <title>Relance de votre devis - NeoTravel</title> </head>  <body style=\"margin:0;padding:0;background:#1E2742;font-family:Arial,Helvetica,sans-serif;\">  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#1E2742;padding:40px 20px;\"> <tr> <td align=\"center\">  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:600px;background:#243453;border-radius:24px;overflow:hidden;\">  <tr> <td style=\"padding:60px 40px;text-align:center;background:radial-gradient(circle at center,#34516b 0%,#243453 70%);\">  <div style=\" display:inline-block; padding:8px 18px; border:1px solid rgba(113,220,194,.35); border-radius:999px; color:#70D6C4; font-size:13px; letter-spacing:2px; text-transform:uppercase; margin-bottom:30px; \"> TRANSPORT DE GROUPE SIMPLIFIÉ </div>  <h1 style=\" margin:0; font-size:58px; font-weight:800; line-height:1; color:white; \"> Neo<span style=\"color:#70D6C4;\">Travel</span> </h1>  <p style=\" margin:35px 0 10px; font-size:28px; font-weight:600; color:white; \"> Nous attendons votre retour 👋 </p>  <p style=\" margin:0 auto; max-width:450px; font-size:18px; line-height:30px; color:#D4D9E5; \"> Bonjour <strong>{{ $json.fields['﻿Nom'] }}</strong>, <br><br>  Nous vous avions envoyé un devis concernant votre demande de transport de groupe, mais nous n'avons pas encore reçu de réponse de votre part.  Si votre projet est toujours d'actualité, vous pouvez consulter votre devis et nous faire part de votre décision en cliquant sur le bouton ci-dessous.  </p>  <table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" style=\"margin-top:45px;\"> <tr> <td bgcolor=\"#69CDB8\" style=\"border-radius:999px;\"> <a href=\"{{ $('devis').item.json.fields.PDF }}\" style=\" display:inline-block; padding:18px 42px; font-size:18px; font-weight:bold; color:white; text-decoration:none; \"> Consulter mon devis </a> </td> </tr> </table>  <p style=\" margin-top:45px; font-size:16px; line-height:28px; color:#C9D2E3; \"> Si vous avez déjà répondu ou si votre projet n'est plus d'actualité, vous pouvez simplement ignorer cet e-mail. </p>  <hr style=\" border:none; height:1px; background:#3C4C72; margin:50px 0 30px; \">  <p style=\" margin:0; font-size:13px; line-height:24px; color:#95A3C1; \"> Cet e-mail a été envoyé automatiquement par <strong>NeoTravel</strong>.<br> Merci de ne pas y répondre directement. </p>  </td> </tr>  </table>  </td> </tr> </table>  </body> </html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        -320
+      ],
+      "id": "e8a4eed9-ca26-4e62-b687-17b9d9553ea0",
+      "name": "mail_relance",
+      "webhookId": "99e7cf0c-93c3-4bb7-a735-e68de6596137",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2p7iJv4l9gQkPgk8",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblMptGcNIBO344px",
+          "mode": "list",
+          "cachedResultName": "Relances",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblMptGcNIBO344px"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('relances').item.json.id }}",
+            "Statut": "envoyée"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Code",
+              "displayName": "Code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "﻿Devis",
+              "displayName": "﻿Devis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date_prevue",
+              "displayName": "Date_prevue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "planifiée",
+                  "value": "planifiée"
+                },
+                {
+                  "name": "envoyée",
+                  "value": "envoyée"
+                },
+                {
+                  "name": "annulée",
+                  "value": "annulée"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Canal",
+              "displayName": "Canal",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "email",
+                  "value": "email"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        -320
+      ],
+      "id": "3394a557-943c-4a9d-b1d7-aedc60e3f15d",
+      "name": "maj_relance",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appxDxTahkMM34ibQ",
+          "mode": "list",
+          "cachedResultName": "NeoTravel CRM",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBUUxwRfBA2itp6",
+          "mode": "list",
+          "cachedResultName": "Devis",
+          "cachedResultUrl": "https://airtable.com/appxDxTahkMM34ibQ/tblBUUxwRfBA2itp6"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('devis').item.json.id }}",
+            "Nb_relances": "={{ $('devis').item.json.fields.Nb_relances + 1 }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "﻿Reference",
+              "displayName": "﻿Reference",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Demande",
+              "displayName": "Demande",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Prix_HT",
+              "displayName": "Prix_HT",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "TVA",
+              "displayName": "TVA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Prix_TTC",
+              "displayName": "Prix_TTC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Detail_lignes",
+              "displayName": "Detail_lignes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Envoyé",
+                  "value": "Envoyé"
+                },
+                {
+                  "name": "Brouillon",
+                  "value": "Brouillon"
+                },
+                {
+                  "name": "Accepté",
+                  "value": "Accepté"
+                },
+                {
+                  "name": "Refusé",
+                  "value": "Refusé"
+                },
+                {
+                  "name": "Clôturé",
+                  "value": "Clôturé"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date_envoi",
+              "displayName": "Date_envoi",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Nb_relances",
+              "displayName": "Nb_relances",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "PDF",
+              "displayName": "PDF",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Relances",
+              "displayName": "Relances",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date_demande",
+              "displayName": "Date_demande",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": " Délai_devis_jours",
+              "displayName": " Délai_devis_jours",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Réponse",
+              "displayName": "Réponse",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2208,
+        -320
+      ],
+      "id": "0c6f54f9-7f0d-4db7-be8c-9e7d5d80d671",
+      "name": "maj_devis",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QNXx8onPA94qvWVm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('creer_devis').item.json.fields.PDF }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1104,
+        544
+      ],
+      "id": "0d9d7150-5d94-453b-8712-05b80a408e46",
+      "name": "convert_pdf"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('parametres').item.json.email }}",
+        "subject": "Votre devis NeoTravel pour votre transport en autocar",
+        "message": "=<div style=\"margin:0;padding:30px 0;background:#eef2ec;font-family:Arial,Helvetica,sans-serif;\">\n\n  <div style=\"max-width:700px;margin:auto;background:#ffffff;border-radius:22px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.08);\">\n\n    <!-- HEADER -->\n\n    <div style=\"background:linear-gradient(135deg,#07334a 0%,#0b4f5f 55%,#0b2a17 100%);padding:34px 40px;color:#fff;\">\n\n      <div style=\"font-size:28px;font-weight:900;\">\n        Neo<span style=\"color:#F6D63B;\">Travel</span>\n      </div>\n\n      <div style=\"margin-top:12px;color:#F6D63B;font-style:italic;font-size:16px;\">\n        Life is a trip\n      </div>\n\n      <h1 style=\"margin:24px 0 10px;font-size:34px;line-height:1.1;\">\n        Votre devis est prêt\n      </h1>\n\n      <div style=\"color:#dce7df;font-size:15px;line-height:1.7;\">\n        Bonjour <strong>{{ $('parametres').item.json.client_nom }}</strong>,<br><br>\n\n        Merci pour votre confiance.\n\n        Votre devis NeoTravel est disponible et vous le trouverez en pièce jointe à ce message.\n      </div>\n\n    </div>\n\n    <!-- CONTENU -->\n\n    <div style=\"padding:34px 40px;\">\n\n      <div style=\"background:#0f321d;border-radius:18px;padding:22px;color:white;\">\n\n        <div style=\"font-size:18px;font-weight:700;color:#F6D63B;margin-bottom:18px;\">\n          Votre voyage\n        </div>\n\n        <table style=\"width:100%;border-collapse:collapse;font-size:15px;\">\n\n          <tr>\n            <td style=\"padding:8px 0;color:#F6D63B;\">Départ</td>\n            <td style=\"padding:8px 0;text-align:right;\">\n              {{ $('parametres').item.json.depart }}\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:8px 0;color:#F6D63B;\">Destination</td>\n            <td style=\"padding:8px 0;text-align:right;\">\n              {{ $('parametres').item.json.destination }}\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:8px 0;color:#F6D63B;\">Date de départ</td>\n            <td style=\"padding:8px 0;text-align:right;\">\n              {{ $('parametres').item.json.date_depart }}\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:8px 0;color:#F6D63B;\">Date de retour</td>\n            <td style=\"padding:8px 0;text-align:right;\">\n              {{ $('parametres').item.json.date_retour }}\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:8px 0;color:#F6D63B;\">Passagers</td>\n            <td style=\"padding:8px 0;text-align:right;\">\n              {{ $('parametres').item.json.nb_passagers }}\n            </td>\n          </tr>\n\n        </table>\n\n      </div>\n\n      <div style=\"margin-top:30px;font-size:15px;line-height:1.8;color:#46554A;\">\n\n        Nous vous invitons à consulter le devis joint.\n\n        <br><br>\n\n        Si cette proposition vous convient, il vous suffit de répondre à cet e-mail afin que nous puissions confirmer votre réservation.\n\n        <br><br>\n\n        Si vous souhaitez modifier votre demande ou obtenir des renseignements complémentaires, notre équipe se tient à votre disposition.\n\n      </div>\n\n      <div style=\"margin-top:34px;text-align:center;\">\n\n        <a href=\"mailto:contact@neotravel.fr\"\n           style=\"display:inline-block;background:#F6D63B;color:#102817;text-decoration:none;font-weight:700;padding:16px 34px;border-radius:999px;\">\n          Contacter NeoTravel\n        </a>\n\n      </div>\n\n    </div>\n\n    <!-- FOOTER -->\n\n    <div style=\"background:#f6f8f4;padding:24px;text-align:center;font-size:13px;color:#6b756d;line-height:1.7;\">\n\n      <strong style=\"font-size:18px;color:#102817;\">\n        Neo<span style=\"color:#F6D63B;\">Travel</span>\n      </strong>\n\n      <br><br>\n\n      Organisez votre voyage de groupe simplement & rapidement.\n\n      <br><br>\n\n      📧 contact@neotravel.fr<br>\n      📞 01 23 45 67 89\n\n    </div>\n\n  </div>\n\n</div>",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        544
+      ],
+      "id": "48c677c7-0156-4403-98e7-678a999c2444",
+      "name": "envoi_mail_devis",
+      "webhookId": "6dfcda62-ca59-4ae1-9d35-0b0fbaf79a43",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2p7iJv4l9gQkPgk8",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "parametres": {
+      "main": [
+        [
+          {
+            "node": "depart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "depart": {
+      "main": [
+        [
+          {
+            "node": "destination",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "destination": {
+      "main": [
+        [
+          {
+            "node": "distance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "distance": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "json_final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "json_final": {
+      "main": [
+        [
+          {
+            "node": "calculer_devis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "calculer_devis": {
+      "main": [
+        [
+          {
+            "node": "generer_html_devis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "creer_demande": {
+      "main": [
+        [
+          {
+            "node": "creer_devis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "creer_devis": {
+      "main": [
+        [
+          {
+            "node": "creer_premiere_relance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generer_html_devis": {
+      "main": [
+        [
+          {
+            "node": "Convert HTML to PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert HTML to PDF": {
+      "main": [
+        [
+          {
+            "node": "recherche_client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "parametres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "client_existe": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "creer_client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recherche_client": {
+      "main": [
+        [
+          {
+            "node": "client_existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "creer_client": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "creer_demande",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vercel AI Gateway Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "creer_premiere_relance": {
+      "main": [
+        [
+          {
+            "node": "creer_deuxième_relance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "creer_deuxième_relance": {
+      "main": [
+        [
+          {
+            "node": "convert_pdf",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A 5h du matin": {
+      "main": [
+        [
+          {
+            "node": "relances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "relances": {
+      "main": [
+        [
+          {
+            "node": "devis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "devis": {
+      "main": [
+        [
+          {
+            "node": "demandes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "demandes": {
+      "main": [
+        [
+          {
+            "node": "recup clients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recup clients": {
+      "main": [
+        [
+          {
+            "node": "mail_relance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mail_relance": {
+      "main": [
+        [
+          {
+            "node": "maj_relance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "maj_relance": {
+      "main": [
+        [
+          {
+            "node": "maj_devis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "convert_pdf": {
+      "main": [
+        [
+          {
+            "node": "envoi_mail_devis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3ebc1aa1-64d2-4253-aaff-b64644277178",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fc2e910e3ef6d12faf46bc27535892e72b644b763e9861a033950ad02d265724"
+  },
+  "nodeGroups": [],
+  "id": "QrmOmTWRZUxOy2xm",
+  "tags": []
+}
