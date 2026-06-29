@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+---
 
-## Getting Started
+## Fonctionnalités
 
-First, run the development server:
+NeoTravel automatise l'ensemble du cycle commercial d'une demande de transport de groupe.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Assistant conversationnel
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Collecte des informations nécessaires au devis
+- Compréhension du langage naturel
+- Mémoire de la conversation
+- Détection des informations manquantes
+- Qualification automatique des demandes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Génération de devis
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Calcul déterministe du prix
+- Génération d'un devis PDF
+- Envoi automatique par email
+- Mise en forme aux couleurs de NeoTravel
 
-## Learn More
+### CRM
 
-To learn more about Next.js, take a look at the following resources:
+- Création automatique des clients
+- Historisation des demandes
+- Suivi du statut des devis
+- Journalisation des actions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Automatisation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Relances automatiques J+3 et J+7
+- Détection des demandes complexes
+- Escalade vers un conseiller
+- Tableau de bord commercial
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Base Airtable
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Le CRM repose sur plusieurs tables.
+
+| Table | Description |
+|--------|-------------|
+| Clients | Informations des prospects |
+| Demandes | Historique des demandes |
+| Devis | Devis générés |
+| Matrices | Paramètres de calcul du prix |
+| Relances | Suivi des relances automatiques |
+| Logs | Journal des traitements |
+
+---
+
+## Workflows n8n
+
+Les automatisations sont orchestrées dans n8n.
+
+### Qualification
+
+- Réception des informations
+- Vérification de la complétude
+- Création ou mise à jour du client
+
+### Pricing
+
+- Lecture des matrices tarifaires
+- Exécution de `calculer_devis()`
+- Calcul du montant HT
+- Calcul de la TVA
+- Génération du total TTC
+
+### Génération du devis
+
+- Construction du HTML
+- Génération du PDF
+- Envoi par email
+
+### Relances
+
+- Création de la relance
+- Vérification des réponses
+- Envoi automatique J+3
+- Envoi automatique J+7
+- Clôture de la demande
+
+---
+
+## Philosophie
+
+NeoTravel repose sur un principe simple :
+
+> **Le LLM décide. Le code calcule.**
+
+Le modèle d'intelligence artificielle est uniquement responsable de :
+
+- comprendre les demandes du prospect ;
+- conduire la conversation ;
+- identifier les informations manquantes ;
+- produire des réponses naturelles.
+
+En revanche, le calcul du prix est exclusivement réalisé par une fonction déterministe (`calculer_devis()`).
+
+Cette séparation garantit :
+
+- la fiabilité des devis ;
+- la reproductibilité des calculs ;
+- l'auditabilité des règles tarifaires.
+
+---
+
+## Limites du prototype
+
+Le prototype présenté dans le cadre du MBA possède plusieurs limites :
+
+- disponibilité des transporteurs non vérifiée en temps réel ;
+- calcul basé sur une matrice tarifaire simplifiée ;
+- paiement en ligne non implémenté ;
+- signature électronique non intégrée.
+
+Les demandes complexes (plus de 85 passagers, cas particuliers, demandes urgentes) sont automatiquement transférées à un conseiller.
+
+---
+
+## Perspectives d'évolution
+
+Les évolutions envisagées sont notamment :
+
+- connexion avec les API des transporteurs ;
+- disponibilité des véhicules en temps réel ;
+- signature électronique des devis ;
+- paiement en ligne ;
+- espace client ;
+- optimisation automatique des tournées ;
+- recommandations de transporteurs assistées par IA ;
+- tableau de bord décisionnel enrichi.
+
+---
+
+## Équipe
+
+Projet réalisé dans le cadre du MBA1.
+
+- Louanne
+- Amin
+- Clara
+- Quentin
+
+---
+
+## Licence
+
+Projet réalisé dans un cadre pédagogique.
+
+Tous droits réservés © NeoTravel.
