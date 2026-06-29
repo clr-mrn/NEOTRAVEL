@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ reply });
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { reply: "Désolé, une erreur est survenue. Réessayez dans un instant." },
       { status: 500 }
