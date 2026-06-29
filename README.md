@@ -112,6 +112,11 @@ https://neotravel-delta.vercel.app/
 # il est possible d'importer le fichier NEOTRAVEL.json sur n8n pour pouvoir visiualiser son contenu
 # créer un nouveau workflow et importer le fichier json
 ```
+````
+# Accèder à la base de données et au tableau de bord à partir de ce lien
+
+https://airtable.com/appxDxTahkMM34ibQ/shrs03emMttaf6s89
+````
 
 ---
 
