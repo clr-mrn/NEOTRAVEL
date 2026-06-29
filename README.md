@@ -103,6 +103,10 @@ cp .env.local.example .env.local
 # 4. Lancer en développement
 npm run dev
 # Ouvrir http://localhost:3000
+
+# 5. Lancer l'app en ligne
+suivre ce lien :
+# https://neotravel-delta.vercel.app/
 ```
 
 Pour l'agent n8n en local, exposer un webhook public le temps des tests :
