@@ -107,12 +107,10 @@ npm run dev
 # 5. Lancer l'app en ligne
 # suivre ce lien :
 https://neotravel-delta.vercel.app/
-```
 
-Pour l'agent n8n en local, exposer un webhook public le temps des tests :
-
-```bash
-n8n start --tunnel   # ou Cloudflare Tunnel
+# 6. n8n
+# il est possible d'importer le fichier NEOTRAVEL.json sur n8n pour pouvoir visiualiser son contenu
+# créer un nouveau workflow et importer le fichier json
 ```
 
 ---
