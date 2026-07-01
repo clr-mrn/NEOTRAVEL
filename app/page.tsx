@@ -110,8 +110,7 @@ export default function Home() {
             textShadow: "0 3px 20px rgba(0,0,0,0.6)",
           }}
         >
-          Organisez votre
-          voyage de groupe
+          Organisez votre voyage de groupe
         </h1>
 
         {/* Subtitle yellow */}
