@@ -111,7 +111,6 @@ export default function Home() {
           }}
         >
           Organisez votre
-          <br />
           voyage de groupe
         </h1>
 
